@@ -12,5 +12,5 @@ using namespace std;
 
 // print the item
 string func::printItem() {
-    return item::printItem() + " type: " + funType + "para number: " + to_string(numOfPara);
+    return item::printItem() + " type: " + mFunType + "para number: " + to_string(mNumOfPara);
 }

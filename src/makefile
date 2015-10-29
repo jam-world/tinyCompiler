@@ -1,5 +1,5 @@
 
-paser: tokenizer.l grammer.y
+paser: tokenizer.l grammer.y *.cpp
 	bison -d grammer.y
 	flex tokenizer.l
-	g++ -o $@ grammer.tab.c lex.yy.c -ll
+	g++ -o parser grammer.tab.c lex.yy.c *.cpp -ll -I../include

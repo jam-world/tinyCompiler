@@ -15,10 +15,12 @@ using namespace std;
 
 class item {
 private:
-    string itemType;
+    string mItemType;
+    bool mIsExtern;
 public:
-    item(string name) {itemType=name;} // constructor
+    item(string itemType):mItemType(itemType),mIsExtern(false) {} // constructor
     virtual string printItem(); // print the item
+    void setExtern() {mIsExtern=true;} // set the extern attribute
 };
 
 #endif /* item_hpp */

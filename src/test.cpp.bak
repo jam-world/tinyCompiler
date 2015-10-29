@@ -19,6 +19,7 @@ int main() {
     symbolTable *table = new symbolTable(NULL);
     table->insert("far", new variable(4,"int"));
     table->insert("boo", new func("void", 2));
+    table->lookup("boo")->setExtern();
     
     // insert a new scope
     symbolTable *tableScope = new symbolTable(table);

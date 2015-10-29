@@ -17,3 +17,16 @@ void symbolTable::printTable() {
         cout << iter->first + " " << (iter->second)->printItem() << endl;
     }
 }
+
+// lookup function
+item* symbolTable::lookup(string name) {
+    symbolTable* currentTable = this;
+    while (currentTable!=NULL) {
+        if (currentTable->isVariableIn(name)) {
+            return currentTable->getVariable(name);
+        } else {
+            currentTable = currentTable->upToSuperTable();
+        }
+    }
+    return NULL;
+}

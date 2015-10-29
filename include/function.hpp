@@ -14,10 +14,12 @@
 
 class func: public item {
 private:
-    string funType;
-    int numOfPara;
+    string mFunType;
+    int mNumOfPara;
 public:
-    func(string funtype, int numofpara):item("function"),funType(funtype),numOfPara(numofpara) {} //constructor
+    func(int numOfPara):item("function"),mNumOfPara(numOfPara) {} //constructor
+    func(string funtype, int numofpara):item("function"),mFunType(funtype),mNumOfPara(numofpara) {} //constructor
+    void setType(string funType) {mFunType = funType;} // set the type of the function
     string printItem(); // override
 };
 

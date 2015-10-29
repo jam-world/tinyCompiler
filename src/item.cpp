@@ -10,5 +10,5 @@
 
 // print the item
 string item::printItem() {
-    return "type: " + itemType;
+    return "type: " + mItemType + " Extern: " + std::to_string(mIsExtern);
 }

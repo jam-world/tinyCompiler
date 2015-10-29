@@ -5,8 +5,15 @@
 #include "variable.hpp"
 #include "function.hpp"
 #include "scope.hpp"
+#include "item.hpp"
+#include <string>
 
+symbolTable* current; // the current symbol table
+string currentType; // current declaration type
+string currentFunName; // current function name
+int currentParaNum; // current function paramaeter number
 
+// define some extern functions to make grammer.y suitable for cpp
 void yyerror(const char *s)
 {
 	fprintf(stderr, "error: %s\n", s);
@@ -26,14 +33,15 @@ extern "C"
 }
 
 using namespace std;
+ 
 %}
 
 %token INT
 %token STRING
-%token CONST_INT
-%token CONST_STRING
+%token <n> CONST_INT
+%token <s> CONST_STRING
 
-%token IDENT
+%token <s> IDENT
 
 %token EXTERN
 
@@ -66,6 +74,14 @@ using namespace std;
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
+%type <s> function_definition function_declarator
+%type <n> parameter_list 
+
+%union
+{
+  char* s;
+  int n;
+}
 
 %%
 program :  
@@ -74,27 +90,37 @@ external_declaration
 ;
 
 external_declaration :  
-declaration {cout << "del gobal";}	// Declaration Global			
-| EXTERN declaration {cout << "set extern";}// Set Extern attribute			
-| function_definition 
+declaration 	// Declaration Global			
+| EXTERN declaration
+       {
+         /* how to do it */
+       }// Set Extern attribute
+| function_definition  
 ;
 
 function_definition :  
-type function_declarator decl_glb_fct compound_instruction {cout << "generate code function";}// generate code function
+type function_declarator decl_glb_fct compound_instruction
+    {
+    }// generate code function
   
 ;
 
-decl_glb_fct : {cout << "get function name";}
+decl_glb_fct :
+    {
+      cout << "create new funtion name: " << currentFunName << " type: " << currentType << " parameter number: " << currentParaNum << endl;
+      func* newFun = new func(currentType, currentParaNum);
+      current->insert(currentFunName, newFun);
+    }
 // Get function name - Create a spot to store the function - set attributes
 ;
 
 declaration :  
-type declarator_list ';' 
+type declarator_list ';'
 ;
 
 type :  
-INT 					// set INT
-| STRING 				// set String
+INT 			{cout << "set current type: int" << endl;  currentType = "int";}		// set INT
+| STRING 		{ cout << "set current type: string" << endl; currentType = "string";}		// set String
 ;
 
 declarator_list :  
@@ -108,18 +134,33 @@ declaration 				// Set locals
 ;
 
 declarator :  
-IDENT 					// Create Variable
+IDENT
+   {
+     cout << "create new variable: " << $1 << endl;
+     variable* newVar = new variable(0,currentType);
+     current->insert($1,newVar);
+   }				// Create Variable
 | function_declarator 		        // Create Function
 ;
 
 function_declarator :  
-IDENT '(' ')' 				// Create function name
-| IDENT '(' parameter_list ')'  	// Create partial function 
+IDENT '(' ')'
+      {
+        cout << "set current fun name: " << $1 << " parameter number: "<< 0 << endl;
+        currentFunName = $1;
+        currentParaNum = 0;
+      }			// Create function name
+| IDENT '(' parameter_list ')'
+      {
+        cout << "set current fun name: " << $1 << "parameter number: " << $3 <<endl;
+        currentFunName = $1;
+        currentParaNum = $3;
+      }  	// Create partial function
 ;
 
 parameter_list :  
-parameter_declaration 			
-| parameter_list ',' parameter_declaration // Insert parameters
+parameter_declaration {$$=1;}			
+| parameter_list ',' parameter_declaration {$$=$1+1;}// Insert parameters
 ;
 
 parameter_declaration :  
@@ -128,11 +169,11 @@ type IDENT 				// Type declaration
 
 instruction :  
 ';'  
-| compound_instruction {$$=$1;}
-| expression_instruction  {$$=$1;}
-| iteration_instruction  {$$=$1;}
-| select_instruction  {$$=$1;}
-| jump_instruction {$$=$1;}
+| compound_instruction {}
+| expression_instruction  {}
+| iteration_instruction  {}
+| select_instruction  {}
+| jump_instruction {}
 ;
 
 expression_instruction :              
@@ -145,23 +186,32 @@ IDENT ASSIGNMENT expression
 ;
 
 compound_instruction :  
-block_start declaration_list instruction_list block_end {$$=$3;}
+block_start declaration_list instruction_list block_end {}
 | block_start declaration_list block_end 
-| block_start instruction_list block_end {$$=$2;}
+| block_start instruction_list block_end {}
 | block_start block_end 
+| ';'
 ;
 
 
 block_start :  
-'{'  // Init your hash table - symbol table
+'{' {
+  cout << "start new block with new symbol table: " << endl;
+  symbolTable *scopeTable = new symbolTable(current);
+  current->insert("scope",new scope(scopeTable));
+  current = scopeTable;
+    } // Init your hash table - symbol table
 ;
 
 block_end :  
-'}' // Empty hash table
+'}' {
+  cout << "end the block jump out of the symbol table: " << endl;
+  current = current->upToSuperTable();
+    } // Empty hash table
 ;
 
 instruction_list :  
-instruction  {$$=$1;}
+instruction  {}
 | instruction_list instruction 
 ;
 
@@ -171,7 +221,7 @@ cond_instruction instruction %prec LOWER_THAN_ELSE
 ;
 
 cond_instruction :  
-IF '(' condition ')' {$$=$3;} 
+IF '(' condition ')' {} 
 ;
 
 iteration_instruction :  
@@ -198,31 +248,31 @@ EGAL  {}
 ;
 
 expression :  
-expression_additive {$$=$1;}
+expression_additive {}
 | expression SHIFTLEFT expression_additive //  Compute expression
 | expression SHIFTRIGHT expression_additive // Compute expression
 ;
 
 expression_additive :  
-expression_multiplicative {$$=$1;}
+expression_multiplicative {}
 | expression_additive PLUS expression_multiplicative // Compute expression
 | expression_additive MINUS expression_multiplicative // Compute expression
 ;
 
 expression_multiplicative :  
-unary_expression{$$=$1;}
+unary_expression{}
 | expression_multiplicative MULTI unary_expression
 | expression_multiplicative DIV unary_expression
 | expression_multiplicative MODULO unary_expression
 ;
 
 unary_expression:  
-expression_postfixee {$$=$1;}
+expression_postfixee {}
 | MINUS unary_expression
 ;
 
 expression_postfixee :  
-primary_expression {$$=$1;}
+primary_expression {}
 | IDENT '(' argument_expression_list')' 
 | IDENT '(' ')' 
 ;
@@ -241,12 +291,15 @@ IDENT
 
 
 
-
 %%
 
 int main()
 {
-  return yyparse();
+  current = new symbolTable(NULL);
+  yyparse();
+  cout << endl << "---------------------------------" << endl;
+  current->printTable();
+  return 0;
 }
 
 void yyerror(char *s)

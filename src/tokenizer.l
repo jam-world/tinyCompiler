@@ -12,13 +12,14 @@ extern "C"
   int yylex(void);
 }
 #include "grammer.tab.h"
+using namespace std;
 %}
 
 
 COMMENTS "//".*
 COMMENTS_MULTILINE "/*"([^*]|\*+[^*/])*\*+"/"
 DEFINE #define
-IDENTIFIER [a-zA-Z]+[0-9]*
+IDENTIFIER [A-Za-z]+[0-9]*
 NUMBER [0-9]+ 
 
 %%
@@ -57,14 +58,14 @@ return {return RETURN;}
 "<" {return INF;}
 ">" {return SUP;}
 "=" {return ASSIGNMENT;}
-{IDENTIFIER} {return IDENT;}
-{NUMBER} {return CONST_INT;}
+{IDENTIFIER} {yylval.s = yytext; return IDENT;}
+{NUMBER} {yylval.n = atoi(yytext); return CONST_INT;}
 \n {}
 [ \t] {}
 
 \" { BEGIN QUOTE;}
 
-<QUOTE>([^\"])* {return CONST_STRING;}
+<QUOTE>([^\"])* {yylval.s = yytext; return CONST_STRING;}
 <QUOTE>\" { BEGIN INITIAL;}
 
 "#" {BEGIN MARCO;}
