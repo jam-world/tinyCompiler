@@ -528,11 +528,11 @@ static const yytype_uint16 yyrline[] =
        0,    91,    91,    92,    96,    97,   100,   100,   105,   112,
      122,   123,   127,   128,   132,   133,   137,   138,   142,   148,
      152,   159,   169,   170,   174,   182,   183,   184,   185,   186,
-     187,   191,   192,   196,   200,   201,   202,   203,   204,   209,
-     218,   225,   226,   231,   232,   236,   240,   241,   242,   246,
-     250,   254,   255,   256,   257,   258,   259,   263,   264,   265,
-     269,   270,   271,   275,   276,   277,   278,   282,   283,   287,
-     288,   289,   293,   294,   298,   299,   300,   301
+     187,   191,   192,   196,   203,   204,   205,   206,   207,   212,
+     221,   228,   229,   234,   235,   239,   243,   244,   245,   249,
+     253,   257,   258,   259,   260,   261,   262,   266,   267,   268,
+     272,   273,   274,   278,   279,   280,   281,   285,   286,   290,
+     291,   292,   296,   297,   301,   302,   303,   304
 };
 #endif
 
@@ -1642,18 +1642,25 @@ yyreduce:
     {;}
     break;
 
+  case 33:
+#line 197 "grammer.y"
+    {
+    current->lookup((yyvsp[(1) - (3)].s));
+  ;}
+    break;
+
   case 34:
-#line 200 "grammer.y"
+#line 203 "grammer.y"
     {;}
     break;
 
   case 36:
-#line 202 "grammer.y"
+#line 205 "grammer.y"
     {;}
     break;
 
   case 39:
-#line 209 "grammer.y"
+#line 212 "grammer.y"
     {
   cout << "start new block with new symbol table: " << endl;
   symbolTable *scopeTable = new symbolTable(current);
@@ -1663,7 +1670,7 @@ yyreduce:
     break;
 
   case 40:
-#line 218 "grammer.y"
+#line 221 "grammer.y"
     {
   cout << "end the block jump out of the symbol table: " << endl;
   current = current->upToSuperTable();
@@ -1671,73 +1678,88 @@ yyreduce:
     break;
 
   case 41:
-#line 225 "grammer.y"
+#line 228 "grammer.y"
     {;}
     break;
 
   case 45:
-#line 236 "grammer.y"
+#line 239 "grammer.y"
     {;}
     break;
 
   case 51:
-#line 254 "grammer.y"
-    {;}
-    break;
-
-  case 52:
-#line 255 "grammer.y"
-    {;}
-    break;
-
-  case 53:
-#line 256 "grammer.y"
-    {;}
-    break;
-
-  case 54:
 #line 257 "grammer.y"
     {;}
     break;
 
-  case 55:
+  case 52:
 #line 258 "grammer.y"
     {;}
     break;
 
-  case 56:
+  case 53:
 #line 259 "grammer.y"
     {;}
     break;
 
+  case 54:
+#line 260 "grammer.y"
+    {;}
+    break;
+
+  case 55:
+#line 261 "grammer.y"
+    {;}
+    break;
+
+  case 56:
+#line 262 "grammer.y"
+    {;}
+    break;
+
   case 57:
-#line 263 "grammer.y"
+#line 266 "grammer.y"
     {;}
     break;
 
   case 60:
-#line 269 "grammer.y"
+#line 272 "grammer.y"
     {;}
     break;
 
   case 63:
-#line 275 "grammer.y"
+#line 278 "grammer.y"
     {;}
     break;
 
   case 67:
-#line 282 "grammer.y"
+#line 285 "grammer.y"
     {;}
     break;
 
   case 69:
-#line 287 "grammer.y"
+#line 290 "grammer.y"
     {;}
+    break;
+
+  case 70:
+#line 291 "grammer.y"
+    { current->lookup((yyvsp[(1) - (4)].s));;}
+    break;
+
+  case 71:
+#line 292 "grammer.y"
+    {current->lookup((yyvsp[(1) - (3)].s));;}
+    break;
+
+  case 74:
+#line 301 "grammer.y"
+    {current->lookup((yyvsp[(1) - (1)].s));;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1741 "grammer.tab.c"
+#line 1763 "grammer.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1951,7 +1973,7 @@ yyreturn:
 }
 
 
-#line 306 "grammer.y"
+#line 309 "grammer.y"
 
 
 int main()

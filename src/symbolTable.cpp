@@ -28,5 +28,8 @@ item* symbolTable::lookup(string name) {
             currentTable = currentTable->upToSuperTable();
         }
     }
-    return NULL;
+    item* fake = new item("fake",false);
+    insert("fake", fake);
+    cout << endl << "---------------------------" << "error: item " << name << " not find " << "-----------------------" << endl << endl;
+    return fake;
 }

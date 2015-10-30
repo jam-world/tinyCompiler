@@ -158,7 +158,7 @@ IDENT '(' ')'
       }			// Create function name
 | IDENT '(' parameter_list ')'
       {
-        cout << "set current fun name: " << $2 << "parameter number: " << $3 <<endl;
+        cout << "set current fun name: " << $1 << "parameter number: " << $3 <<endl;
         currentFunName = $1;
         currentParaNum = $3;
         currentFunType = currentType;
@@ -194,6 +194,9 @@ expression ';'
 
 assignment :  
 IDENT ASSIGNMENT expression 
+  {
+    current->lookup($1);
+  }
 ;
 
 compound_instruction :  
@@ -285,8 +288,8 @@ expression_postfixee {}
 
 expression_postfixee :  
 primary_expression {}
-| IDENT '(' argument_expression_list')' 
-| IDENT '(' ')' 
+| IDENT '(' argument_expression_list')' { current->lookup($1);}
+| IDENT '(' ')' {current->lookup($1);}
 ;
 
 argument_expression_list:  
@@ -295,7 +298,7 @@ expression
 ;
 
 primary_expression :  
-IDENT  
+IDENT  {current->lookup($1);}
 | CONST_INT
 | CONST_STRING 
 | '(' expression ')'
