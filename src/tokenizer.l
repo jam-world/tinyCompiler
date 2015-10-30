@@ -58,7 +58,7 @@ return {return RETURN;}
 "<" {return INF;}
 ">" {return SUP;}
 "=" {return ASSIGNMENT;}
-{IDENTIFIER} {yylval.s = yytext; return IDENT;}
+{IDENTIFIER} {yylval.s = strdup(yytext); return IDENT;}
 {NUMBER} {yylval.n = atoi(yytext); return CONST_INT;}
 \n {}
 [ \t] {}
