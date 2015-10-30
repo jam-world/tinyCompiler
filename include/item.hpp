@@ -18,7 +18,7 @@ private:
     string mItemType;
     bool mIsExtern;
 public:
-    item(string itemType):mItemType(itemType),mIsExtern(false) {} // constructor
+    item(string itemType, bool isExtern):mItemType(itemType),mIsExtern(isExtern) {} // constructor
     virtual string printItem(); // print the item
     void setExtern() {mIsExtern=true;} // set the extern attribute
 };

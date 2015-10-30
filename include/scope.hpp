@@ -16,8 +16,9 @@
 class scope: public item {
 private:
     symbolTable *mTable;
+    string mScopeName;
 public:
-    scope(symbolTable* table):item("scope"),mTable(table) {} // constructor
+    scope(string scopeName, symbolTable* table):item("scope",false),mTable(table),mScopeName(scopeName) {} // constructor
     string printItem(); // vertual
 };
 

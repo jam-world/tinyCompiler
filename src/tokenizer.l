@@ -48,7 +48,7 @@ return {return RETURN;}
 "/" {return DIV;}
 "+" {return PLUS;}
 "*" {return MULTI;}
-"%" | {return MODULO;}
+"%"  {return MODULO;}
 "<<" {return SHIFTLEFT;}
 ">>" {return SHIFTRIGHT;}
 "<=" {return INFEQUAL;}

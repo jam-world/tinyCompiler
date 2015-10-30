@@ -8,9 +8,13 @@
 
 #include "function.hpp"
 #include <string>
+#include <iostream>
 using namespace std;
 
 // print the item
 string func::printItem() {
+    cout << "begin function parameter list: " << endl;
+    mParaList->printTable();
+    cout << "end list" << endl;
     return item::printItem() + " type: " + mFunType + "para number: " + to_string(mNumOfPara);
 }

@@ -12,6 +12,9 @@ symbolTable* current; // the current symbol table
 string currentType; // current declaration type
 string currentFunName; // current function name
 int currentParaNum; // current function paramaeter number
+symbolTable* currentFunPara; // current function parameter list
+string currentFunType; // current type for the parameter
+int isExtern; // is the current item extern
 
 // define some extern functions to make grammer.y suitable for cpp
 void yyerror(const char *s)
@@ -91,11 +94,11 @@ external_declaration
 
 external_declaration :  
 declaration 	// Declaration Global			
-| EXTERN declaration
-       {
-         /* how to do it */
-       }// Set Extern attribute
-| function_definition  
+| scope_position declaration  // Set Extern attribute
+;
+
+scope_position: {isExtern = false;} // current item is not extern
+EXTERN {isExtern = true;} // current item is extern
 ;
 
 function_definition :  
@@ -108,14 +111,16 @@ type function_declarator decl_glb_fct compound_instruction
 decl_glb_fct :
     {
       cout << "create new funtion name: " << currentFunName << " type: " << currentType << " parameter number: " << currentParaNum << endl;
-      func* newFun = new func(currentType, currentParaNum);
+      func* newFun = new func(currentType, currentParaNum, currentFunPara, isExtern);
       current->insert(currentFunName, newFun);
+      currentFunPara = new symbolTable(NULL);
     }
 // Get function name - Create a spot to store the function - set attributes
 ;
 
 declaration :  
-type declarator_list ';'
+type declarator_list ';' 
+| function_definition 
 ;
 
 type :  
@@ -137,7 +142,7 @@ declarator :
 IDENT
    {
      cout << "create new variable: " << $1 << endl;
-     variable* newVar = new variable(0,currentType);
+     variable* newVar = new variable(0,currentType,false);
      current->insert($1,newVar);
    }				// Create Variable
 | function_declarator 		        // Create Function
@@ -149,12 +154,14 @@ IDENT '(' ')'
         cout << "set current fun name: " << $1 << " parameter number: "<< 0 << endl;
         currentFunName = $1;
         currentParaNum = 0;
+        currentFunType = currentType;
       }			// Create function name
 | IDENT '(' parameter_list ')'
       {
-        cout << "set current fun name: " << $1 << "parameter number: " << $3 <<endl;
+        cout << "set current fun name: " << $2 << "parameter number: " << $3 <<endl;
         currentFunName = $1;
         currentParaNum = $3;
+        currentFunType = currentType;
       }  	// Create partial function
 ;
 
@@ -164,7 +171,11 @@ parameter_declaration {$$=1;}
 ;
 
 parameter_declaration :  
-type IDENT 				// Type declaration
+type IDENT
+    {
+      cout << "declare parameters: "<< $2 << " with type: " << currentType << " extern: " << isExtern << endl;
+      currentFunPara->insert($2, new variable(4, currentType, isExtern));
+    } // declare the parameter
 ;
 
 instruction :  
@@ -198,7 +209,7 @@ block_start :
 '{' {
   cout << "start new block with new symbol table: " << endl;
   symbolTable *scopeTable = new symbolTable(current);
-  current->insert("scope",new scope(scopeTable));
+  current->insert("scope",new scope("block local", scopeTable));
   current = scopeTable;
     } // Init your hash table - symbol table
 ;
@@ -214,6 +225,7 @@ instruction_list :
 instruction  {}
 | instruction_list instruction 
 ;
+
 
 select_instruction :  
 cond_instruction instruction %prec LOWER_THAN_ELSE
@@ -296,6 +308,7 @@ IDENT
 int main()
 {
   current = new symbolTable(NULL);
+  currentFunPara = new symbolTable(NULL);
   yyparse();
   cout << endl << "---------------------------------" << endl;
   current->printTable();

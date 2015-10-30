@@ -884,7 +884,10 @@ YY_RULE_SETUP
 {return MULTI;}
 	YY_BREAK
 case 21:
-#line 52 "tokenizer.l"
+YY_RULE_SETUP
+#line 51 "tokenizer.l"
+{return MODULO;}
+	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 52 "tokenizer.l"
@@ -993,7 +996,7 @@ YY_RULE_SETUP
 #line 78 "tokenizer.l"
 ECHO;
 	YY_BREAK
-#line 997 "lex.yy.c"
+#line 1000 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(QUOTE):
 case YY_STATE_EOF(MARCO):

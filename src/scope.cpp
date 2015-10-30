@@ -10,7 +10,7 @@
 #include <iostream>
 
 string scope::printItem() {
-    cout << "begins: \n";
+    cout << "begins scope: " << mScopeName << endl;
     mTable->printTable();
     return " end \n";
 }
