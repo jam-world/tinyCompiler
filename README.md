@@ -1,4 +1,16 @@
 # compilerProject
-The goal of this project is build a small c compiler with bison and flex, now I'm going to build the parser and the current latest parser is in the version1.1 branch
+build a c compiler with flex and bison
 
-# second part the parser
+## how to build
+run make in the src directory
+
+## project structure
+src: contains all the .y .l .c .cpp file
+include: contains all the header file .hpp
+test: contain some test file
+
+## how to test
+fun the test.sh in the src file, it will test the compiler by the test file contained in the test directory
+
+
+
